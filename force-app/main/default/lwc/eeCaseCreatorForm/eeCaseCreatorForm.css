@@ -1,0 +1,13 @@
+/* Optional styling */
+.slds-card__header {
+    background-color: #f4f6f9;
+}
+
+/* Main Flight Card Container */
+.flight-card-container {
+    padding: 1rem;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    margin-top: 1rem;
+    
+}

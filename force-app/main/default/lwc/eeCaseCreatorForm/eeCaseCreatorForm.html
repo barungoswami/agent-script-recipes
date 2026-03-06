@@ -1,0 +1,20 @@
+<template>
+    <lightning-card title="Lodge A New Case Form" icon-name="standard:flight" class="flight-card-container">
+        <div class="slds-p-horizontal_medium">
+            <!--lightning-input label="Facility Name" onchange={handleFacilityNameChange} value={accountId}></lightning-input>-->
+
+            <!-- lightning-record-picker ensures it is ALWAYS a searchable lookup -->
+            <lightning-record-picker
+                label="Facility Name"
+                placeholder="Search Facilities..."
+                object-api-name="Account"
+                value={accountId}
+                onchange={handleFacilityNameChange}>
+            </lightning-record-picker>
+
+            <lightning-input label="Subject" onchange={handleSubjectChange} value={subject}></lightning-input>
+            <lightning-input label="Description" onchange={handleDescriptionChange} value={description}></lightning-input>
+            <!-- No explicit save button is needed. The input is captured as the user types. -->
+        </div>
+    </lightning-card>
+</template>

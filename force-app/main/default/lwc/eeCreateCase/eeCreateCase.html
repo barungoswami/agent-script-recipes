@@ -1,0 +1,32 @@
+<template>
+    <lightning-card title="Lodge Complain against a Facility" icon-name="standard:case">
+        <div class="slds-m-around_medium">
+            <lightning-record-edit-form 
+                object-api-name="Case" 
+                onsubmit={handleCaseSubmit} 
+                onsuccess={handleSuccess}>
+
+                <!-- Standard input fields -->
+                <lightning-input-field field-name="Subject" onchange={handleCaseSubjectChange}></lightning-input-field>
+                <lightning-input-field field-name="Description" onchange={handleCaseDescriptionChange}></lightning-input-field>
+                <!-- Reusable Lookup Component for Account (e.g., AccountId field) -->
+                <!-- Listen for the 'valueselected' custom event using the 'onvalueselected' attribute -->
+                <c-ee_-reusable-lookup 
+                    label="Facility Name" 
+                    selected-icon-name="standard:account" 
+                    object-label="Account" 
+                    object-api-name="Account" 
+                    field-api-name="Name"
+                    other-field-api-name="Industry" 
+                    onvalueselected={handleValueSelectedOnAccount}>
+                </c-ee_-reusable-lookup>
+                <div class="slds-m-top_medium">
+                    <lightning-button variant="brand" type="submit" label="Create Case"></lightning-button>
+                </div>
+            </lightning-record-edit-form>
+        </div>
+    </lightning-card>
+
+    <!-- Result Viewer Component, displayed when recordId is present -->
+    <c-ee-create-case-result-viewer record-id={caseNumber}></c-ee-create-case-result-viewer>
+</template>

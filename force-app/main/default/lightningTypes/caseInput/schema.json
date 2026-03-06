@@ -1,0 +1,5 @@
+{
+  "title" : "Case Input",
+  "lightning:type" : "@apexClassType/c__EE_CaseRecordCreatorAction$CreateRecordInput",
+  "description" : "Input structure for creating a case record."
+}

@@ -1,0 +1,5 @@
+{
+  "title" : "Request Filters",
+  "description" : "Flight Request Filters",
+  "lightning:type" : "@apexClassType/c__FlightRequestFilter"
+}

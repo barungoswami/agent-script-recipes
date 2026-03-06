@@ -1,0 +1,5 @@
+{
+  "title" : "Case Response",
+  "description" : "Case Response",
+  "lightning:type" : "@apexClassType/EE_CaseRecordCreatorAction.CreateRecordOutput"
+}

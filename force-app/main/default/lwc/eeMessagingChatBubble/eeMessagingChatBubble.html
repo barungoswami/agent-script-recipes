@@ -1,0 +1,20 @@
+<template>
+<div class={generateMessageBubbleClassname}>
+        <lightning-formatted-rich-text 
+            value={textContent}>
+        </lightning-formatted-rich-text>
+    </div>
+    <div lwc:if={showCaseForm}>
+        <c-ee-create-case 
+            params={params}
+            oncasecomplete={handleCaseClose}>
+        </c-ee-create-case>
+    </div>
+    <div lwc:if={strMessage}>
+        <div class={generateMessageBubbleClassname}>
+            <lightning-formatted-rich-text 
+                value={strMessage}>
+            </lightning-formatted-rich-text>
+        </div>
+</div>
+</template>

@@ -1,0 +1,21 @@
+<template>
+    <div class="slds-card slds-p-around_medium slds-text-align_center" style="background: linear-gradient(135deg, #e3f0ff 0%, #f9f9f9 100%); box-shadow: 0 4px 16px rgba(0,0,0,0.08);">
+        <div style="display: flex; justify-content: center; align-items: center; height: 80px;">
+            <lightning-icon icon-name="standard:education" size="large" class="slds-m-bottom_medium animated-icon" style="--slds-c-icon-color-foreground-default: #0070d2;"></lightning-icon>
+        </div>
+        <h2 class="slds-text-heading_medium slds-m-bottom_medium" style="font-family: 'Salesforce Sans', Arial, sans-serif; font-weight: bold; text-align: center; color: #0070d2; letter-spacing: 1px; text-shadow: 0 2px 8px #e3f0ff; background: linear-gradient(90deg, #e3f0ff 60%, #f9f9f9 100%); border-radius: 8px; padding: 0.5rem 0;">Public Complain Form</h2>
+        
+        <form class="slds-form slds-form_stacked" style="max-width: 400px; margin: 0 auto; text-align: left; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 1.5rem;">
+            <div class="slds-form-element slds-m-bottom_medium" style="display: flex; align-items: center;">
+                <lightning-icon icon-name="utility:identity" size="x-small" class="slds-m-right_x-small" style="--slds-c-icon-color-foreground-default: #0070d2;"></lightning-icon>
+                <label class="slds-form-element__label" for="facilityName" style="display: block; text-align: left; color: #0070d2; font-weight: 600;">Facility Name</label>
+                <input type="text" id="facilityName" class="slds-input" onchange={handleInputChange} name="facilityName" autocomplete="off" style="border: 1px solid #0070d2; border-radius: 4px; margin-left: 8px;" />
+            </div>
+            <div class="slds-form-element slds-m-bottom_medium" style="display: flex; align-items: center;">
+                <lightning-icon icon-name="utility:location" size="x-small" class="slds-m-right_x-small" style="--slds-c-icon-color-foreground-default: #0070d2;"></lightning-icon>
+                <label class="slds-form-element__label" for="subject" style="display: block; text-align: left; color: #0070d2; font-weight: 600;">Subject</label>
+                <input type="text" id="subject" class="slds-input" onchange={handleInputChange} name="subject" autocomplete="off" style="border: 1px solid #0070d2; border-radius: 4px; margin-left: 8px;" />
+            </div>
+        </form>
+    </div>
+</template>

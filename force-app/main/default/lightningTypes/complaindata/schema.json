@@ -1,0 +1,5 @@
+{
+  "title" : "Complaindata",
+  "lightning:type" : "@apexClassType/c__EE_ShowInputComplainForm$Complaindata",
+  "description" : "Public Complain Case Request Data"
+}
