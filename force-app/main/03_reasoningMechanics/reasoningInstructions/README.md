@@ -9,25 +9,27 @@ This recipe demonstrates **procedural reasoning instructions** - a powerful way 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Reasoning Turn Starts] --> B[Execute Procedural Instructions]
-    B --> C{Check: order_id exists?}
-    C -->|No| D[Return: Ask for Order Number]
-    C -->|Yes| E{Check: order_status cached?}
-    E -->|No| F[Run get_order_status Action]
-    F --> G[Set Variables: status, details, tracking]
-    G --> H[Build Dynamic Instructions]
-    E -->|Yes| H
-    H --> I{order_status value?}
-    I -->|pending| J[Instructions: Processing Info]
-    I -->|shipped| K[Instructions: Tracking Details]
-    I -->|delivered| L[Instructions: Confirm Receipt]
-    I -->|cancelled| M[Instructions: Explain + Offer Help]
-    J --> N[Agent Reasons with Context]
-    K --> N
-    L --> N
-    M --> N
-    D --> N
-    N --> O[Generate Response]
+    A[User Message] --> B[start_agent topic_selector]
+    B --> C[Transition to order_status Topic]
+    C --> D[Execute Procedural Instructions]
+    D --> E{Check: order_id exists?}
+    E -->|No| F[Return: Ask for Order Number]
+    E -->|Yes| G{Check: order_status cached?}
+    G -->|No| H[Run get_order_status Action]
+    H --> I[Set Variables: status, details, tracking]
+    I --> J[Build Dynamic Instructions]
+    G -->|Yes| J
+    J --> K{order_status value?}
+    K -->|pending| L[Instructions: Processing Info]
+    K -->|shipped| M[Instructions: Tracking Details]
+    K -->|delivered| N[Instructions: Confirm Receipt]
+    K -->|cancelled| O[Instructions: Explain + Offer Help]
+    L --> P[Agent Reasons with Context]
+    M --> P
+    N --> P
+    O --> P
+    F --> P
+    P --> Q[Generate Response]
 ```
 
 ## Key Concepts
@@ -60,8 +62,9 @@ reasoning:
             set @variables.order_details = @outputs.details
             set @variables.tracking_number = @outputs.tracking_number
 
-      # Build dynamic instructions with |
-      | The customer's order {!@variables.order_id} has status: {!@variables.order_status}
+      # Build dynamic instructions with | based on state
+      if @variables.order_status:
+         | The customer's order {!@variables.order_id} has status: {!@variables.order_status}
 ```
 
 ### Building Instructions with `|`
@@ -110,6 +113,7 @@ instructions:->
       | The order has been shipped! Provide:
         Tracking number: {!@variables.tracking_number}
         Estimated delivery date from order details
+        Remind them to check delivery address
 
    if @variables.order_status == "delivered":
       | The order was delivered.
@@ -142,6 +146,7 @@ topic order_status:
                description: "Current order status (pending, shipped, delivered, cancelled)"
             details: object
                description: "Detailed order information including items, dates, and customer information"
+               complex_data_type_name: "lightning__recordInfoType"
             tracking_number: string
                description: "Shipping tracking number if the order has been shipped"
          target: "flow://GetOrderStatus"
@@ -158,7 +163,12 @@ topic order_status:
                set @variables.order_details = @outputs.details
                set @variables.tracking_number = @outputs.tracking_number
 
-         | The customer's order {!@variables.order_id} has status: {!@variables.order_status}
+         if @variables.order_status:
+            | The customer's order {!@variables.order_id} has status: {!@variables.order_status}
+
+         if @variables.order_id and not @variables.order_status:
+            | No order was found for order ID {!@variables.order_id}.
+              Ask the customer to verify the order number and try again.
 
          if @variables.order_status == "pending":
             | The order is being processed. Let the customer know:
@@ -170,7 +180,6 @@ topic order_status:
             | The order has been shipped! Provide:
               Tracking number: {!@variables.tracking_number}
               Estimated delivery date from order details
-              Link to track shipment
               Remind them to check delivery address
 
          if @variables.order_status == "delivered":
@@ -224,31 +233,31 @@ Agent: I'd be happy to help you check your order! Could you please provide your 
 ### Example: Order ID Provided, Fetch Status
 
 ```text
-User: My order number is 00000100
+User: My order number is O-0000
 
 [Procedure runs:]
 run @actions.get_order_status
-   with order_id="00000100"
+   with order_id="O-0000"
    → Returns: status="shipped", tracking_number="1Z999..."
 
 if @variables.order_status == "shipped":
    | The order has been shipped! Provide tracking {!@variables.tracking_number}
 
-Agent: Great news! Your order 00000100 has shipped. Your tracking number is 1Z999...
+Agent: Great news! Your order O-0001 has shipped. Your tracking number is 1Z999...
        You can track your package at the carrier's website. It should arrive in 2-3 business days.
 ```
 
 ### Example: Delivered Order
 
 ```text
-User: Has it arrived?
+User: Has O-0001 order arrived?
 
 [Procedure runs - status updated to "delivered"]
 
 if @variables.order_status == "delivered":
    | The order was delivered. Confirm they received it.
 
-Agent: Yes! According to our records, order 00000100 was delivered yesterday.
+Agent: Yes! According to our records, order O-0001 was delivered yesterday.
        Did you receive the package? Is everything satisfactory?
 ```
 
@@ -314,7 +323,7 @@ instructions:->
 
 ## What's Next
 
-- **BeforeAfterReasoning**: Use `before_reasoning` and `after_reasoning` lifecycle events
+- **AfterReasoning**: Use `after_reasoning` lifecycle event
 - **AdvancedReasoningPatterns**: Build complex multi-source reasoning
 - **ContextHandling**: Work with platform context data
 

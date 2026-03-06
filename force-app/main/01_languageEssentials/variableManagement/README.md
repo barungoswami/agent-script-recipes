@@ -9,23 +9,23 @@ This recipe demonstrates how to use variables to manage state in your agent. Var
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Start Survey] --> B[start_agent routes to survey topic]
-    B --> C{Check: user_name set?}
-    C -->|No| D[Ask for Name]
-    D --> E[Store in user_name Variable]
-    C -->|Yes| F{Check: age > 0?}
-    E --> F
-    F -->|No| G[Ask for Age]
-    G --> H[Store in age Variable]
-    F -->|Yes| I{Check: interests set?}
-    H --> I
-    I -->|No| J[Ask for Interests]
-    J --> K[Store in interests Variable]
-    I -->|Yes| L[All Data Collected]
-    K --> L
-    L --> M[Set survey_completed = True]
-    M --> N[Display Summary]
-    N --> O[End]
+    A[Start] --> B[start_agent topic_selector]
+    B --> C[Transition to collect_information]
+    C --> D[Build Dynamic Instructions]
+    D --> E{Check: user_name set?}
+    E -->|No| F[Ask for Name]
+    F --> G[LLM calls set_user_name]
+    E -->|Yes| H{Check: age > 0?}
+    G --> H
+    H -->|No| I[Ask for Age]
+    I --> J[LLM calls set_age]
+    H -->|Yes| K{Check: interests set?}
+    J --> K
+    K -->|No| L[Ask for Interests]
+    L --> M[LLM calls set_interests<br/>+ survey_completed = True]
+    K -->|Yes| N[All Data Collected]
+    M --> N
+    N --> O[Display Summary]
 ```
 
 ## Key Concepts
@@ -155,18 +155,19 @@ variables:
       description: "Whether the user has completed all survey questions"
 
    interests: mutable string = ""
-      description: "List of the user's interests and hobbies"
+      description: "User's interests and hobbies"
 ```
 
 ### Using Variables in Procedural Instructions
 
 ```agentscript
 reasoning:
-   instructions:->
+   instructions: ->
       |
         Collect information from the user step by step.
 
         Current survey progress:
+
       if @variables.user_name:
          | - Name: {!@variables.user_name}
       else:
@@ -183,7 +184,17 @@ reasoning:
          | - Interests: Not provided
 
       | - Survey complete: {!@variables.survey_completed}
+
+        Your task:
+        1. Be natural and conversational. Don't ask all questions at once.
+        2. If user_name is empty, ask for their name
+        3. If age is 0, ask for their age
+        4. If interests list is empty, ask about their hobbies and interests
+        5. Once all information is collected respond to the user with a "Thank you". Also summarize the collected
+           data for them.
 ```
+
+The instructions block uses `if/else` to build a dynamic progress display. The LLM sees this context each turn and decides which `@utils.setVariables` action to invoke from `reasoning.actions`.
 
 ### Conditional Logic Based on Variables
 
@@ -196,18 +207,36 @@ else:
 
 The `if/else` blocks control which template content is included based on variable values.
 
-### start_agent Entry Point
+### Topic Selector and Survey Topic
 
 ```agentscript
 start_agent topic_selector:
-   description: "Welcome users and begin the survey process"
+      description: "Welcome users"
 
-   reasoning:
-      actions:
-         begin_survey: @utils.transition to @topic.survey
-            description: "Start collecting user information through the survey"
-            available when @variables.survey_completed == False
+      reasoning:
+         instructions:|
+               Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+         actions:
+            go_to_collect_information: @utils.transition to @topic.collect_information
+               description: "Collects user's Name, Age and Interests from the user for the survey."
 ```
+
+The `start_agent` routes users to the `collect_information` topic via `@utils.transition to`.
+
+### Setting Variables with `@utils.setVariables`
+
+```agentscript
+      actions:
+         set_user_name: @utils.setVariables
+            with user_name=...
+         set_age: @utils.setVariables
+            with age=...
+         set_interests: @utils.setVariables
+            with interests=...
+            with survey_completed = True
+```
+
+These `reasoning.actions` let the LLM slot-fill values from the conversation using `...`. The `set_interests` action also sets `survey_completed = True` to mark the survey as done.
 
 ## Try It Out
 

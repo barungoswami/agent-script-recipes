@@ -18,6 +18,11 @@ cmd.exe /c sf org create scratch -f config/project-scratch-def.json -a %ORG_ALIA
 call :checkForError
 @echo:
 
+echo Assigning Manage Prompt Templates permission set...
+cmd.exe /c sf org assign permset -n EinsteinGPTPromptTemplateManager
+call :checkForError
+@echo:
+
 echo Pushing source...
 cmd.exe /c sf project deploy start
 call :checkForError

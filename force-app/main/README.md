@@ -39,8 +39,9 @@ Recipes are organized into **4 progressive categories** that mirror your learnin
 - **ActionCallbacks** - Process action results and chain operations (one-level)
 - **AdvancedInputBindings** - Master fixed, bound, and LLM-filled parameters (called slots)
 - **ActionDescriptionOverrides** - Provide context-specific action descriptions
+- **PromptTemplateActions** - Invoke Salesforce Prompt Templates as an action
 
-**Recommended order:** ActionDefinitions → ActionCallbacks → AdvancedInputBindings → ActionDescriptionOverrides
+**Recommended order:** ActionDefinitions → ActionCallbacks → AdvancedInputBindings → ActionDescriptionOverrides, then explore based on your needs
 
 ### 📁 03_reasoningMechanics
 
@@ -48,10 +49,10 @@ Recipes are organized into **4 progressive categories** that mirror your learnin
 
 - **ReasoningInstructions** - Procedural instructions with `instructions:->` and `run` actions
 - **ContextHandling** - Leverage context data and `readonly` linked variables effectively
-- **BeforeAfterReasoning** - Use lifecycle hooks for pre/post-reasoning logic
+- **AfterReasoning** - Use lifecycle hooks for pre/post-reasoning logic
 - **AdvancedReasoningPatterns** - Complex multi-step reasoning and data aggregation
 
-**Recommended order:** ReasoningInstructions → ContextHandling → BeforeAfterReasoning → AdvancedReasoningPatterns
+**Recommended order:** ReasoningInstructions → ContextHandling → AfterReasoning → AdvancedReasoningPatterns
 
 ### 📁 04_architecturalPatterns
 
@@ -92,16 +93,17 @@ Core building blocks every Agent Script developer should know.
 
 Building on the foundation with more sophisticated patterns.
 
-| Recipe                       | Concept           | What You'll Learn                                         |
-| ---------------------------- | ----------------- | --------------------------------------------------------- |
-| **MultiStepWorkflows**       | Action sequences  | Chaining actions, passing data between steps              |
-| **ComplexStateManagement**   | Advanced state    | Object manipulation, list operations, state patterns      |
-| **DynamicActionRouting**     | Action filtering  | `available when`, context-based selection                 |
-| **ConditionalLogicPatterns** | Control flow      | `if`/`else`, comparisons, logical operators               |
-| **ContextHandling**          | Session data      | `readonly` variables, context sources, session management |
-| **ActionCallbacks**          | Post-action hooks | Processing results, one-level chaining                    |
-| **AdvancedInputBindings**    | Action inputs     | Fixed vs bound vs LLM-filled parameters                   |
-| **SafetyAndGuardrails**      | Production safety | Confirmation patterns, validation, safety checks          |
+| Recipe                       | Concept                     | What You'll Learn                                         |
+| ---------------------------- | --------------------------- | --------------------------------------------------------- |
+| **MultiStepWorkflows**       | Action sequences            | Chaining actions, passing data between steps              |
+| **ComplexStateManagement**   | Advanced state              | Object manipulation, list operations, state patterns      |
+| **DynamicActionRouting**     | Action filtering            | `available when`, context-based selection                 |
+| **ConditionalLogicPatterns** | Control flow                | `if`/`else`, comparisons, logical operators               |
+| **ContextHandling**          | Session data                | `readonly` variables, context sources, session management |
+| **ActionCallbacks**          | Post-action hooks           | Processing results, one-level chaining                    |
+| **AdvancedInputBindings**    | Action inputs               | Fixed vs bound vs LLM-filled parameters                   |
+| **PromptTemplateActions**    | Prompt Templates as actions | Invoke Prompt Templates via actions, bind inputs/outputs  |
+| **SafetyAndGuardrails**      | Production safety           | Confirmation patterns, validation, safety checks          |
 
 ### Phase 3: Advanced Concepts (Complete)
 
@@ -109,7 +111,7 @@ Production-ready patterns and real-world applications.
 
 | Recipe                         | Concept             | What You'll Learn                             |
 | ------------------------------ | ------------------- | --------------------------------------------- |
-| **BeforeAfterReasoning**       | Lifecycle events    | `before_reasoning`, `after_reasoning` hooks   |
+| **AfterReasoning**             | Lifecycle events    | `after_reasoning` hook                        |
 | **MultiTopicOrchestration**    | Complex flows       | 3+ topic coordination, handoff strategies     |
 | **BidirectionalNavigation**    | Supervision         | Transitions to specialist topics and return   |
 | **AdvancedReasoningPatterns**  | Complex reasoning   | Multi-step flows, data aggregation            |
@@ -198,7 +200,7 @@ else:
 
 | Element         | Usage                 | Example                            |
 | --------------- | --------------------- | ---------------------------------- |
-| `config:`       | Agent metadata        | `agent_name: "MyAgent"`            |
+| `config:`       | Agent metadata        | `developer_name: "MyAgent"`        |
 | `system:`       | Global settings       | `instructions: "You are..."`       |
 | `variables:`    | State declaration     | `name: mutable string = ""`        |
 | `topic name:`   | Define topic          | `topic greeting:`                  |

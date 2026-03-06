@@ -40,14 +40,14 @@ Every Agent Script file is built from **blocks**. This minimal agent demonstrate
 
 ```agentscript
 config:
-   agent_name: "HelloWorld"
+   developer_name: "HelloWorld"
    agent_label: "HelloWorld"
    description: "A minimal agent that greets users"
 ```
 
 The `config` block provides metadata about your agent:
 
-- `agent_name`: Internal identifier (must follow naming rules: letters, numbers, underscores only, max 80 chars)
+- `developer_name`: Internal identifier (must follow naming rules: letters, numbers, underscores only, max 80 chars)
 - `agent_label`: Human-readable display name
 - `description`: Brief explanation of the agent's purpose
 
@@ -170,12 +170,12 @@ Agent: Welcome, dear friend, to this place so bright,
        What brings you here? Please share your plight,
        And I shall help you find your way.
 
-User: v
+User: how are you today?
 
-Agent: A greeting sweet, like morning dew,
-       Has graced my ears with joy today!
-       Hello to you, yes, hello to you,
-       May sunshine brighten all your way!
+Agent: I'm just a virtual assistant, always feeling fine,
+       Here to help you out, any place or time!
+       How are you today? Is there something you'd like to share,
+       Or a question or topic for which you need care?
 ```
 
 ## What's Next?

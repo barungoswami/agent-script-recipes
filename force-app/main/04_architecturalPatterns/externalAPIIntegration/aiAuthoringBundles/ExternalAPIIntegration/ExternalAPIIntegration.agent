@@ -1,3 +1,6 @@
+# ExternalAPIIntegration - External System Integration
+# Demonstrates integration with external APIs and services using Flow and Apex actions
+
 system:
    messages:
       welcome: "I can integrate with external APIs for weather, payments, and shipping!"
@@ -5,23 +8,24 @@ system:
    instructions: "You integrate with external systems and handle API responses gracefully."
 
 config:
-    agent_name: "ExternalAPIIntegration"
+    developer_name: "ExternalAPIIntegration"
     agent_label: "ExternalAPIIntegration"
+    agent_type: "AgentforceEmployeeAgent"
     description: "Demonstrates integration with external systems using flows and Apex"
 
 variables:
    # API request tracking
    api_request_id: mutable string = ""
       description: "The ID of the current API request."
-   api_response_status: mutable string = ""
+   api_response_status: mutable boolean = False
       description: "The status of the API response (e.g., true for success, false for failure)."
    api_error_message: mutable string = ""
       description: "Error message returned by the API, if any."
 
    # Weather API example
-   temperature: mutable string = ""
+   temperature: mutable number = 0
       description: "The current temperature fetched from the weather API."
-   humidity: mutable string = ""
+   humidity: mutable number = 0
       description: "The current humidity percentage fetched from the weather API."
    conditions: mutable string = ""
       description: "The current weather conditions (e.g., Sunny, Cloudy)."
@@ -31,7 +35,7 @@ variables:
       description: "The unique transaction ID returned after a payment."
 
    # Shipping API example
-   shipment_status: mutable object = {}
+   shipment_status: mutable string = ""
       description: "The status object of the shipment tracking."
 
 start_agent topic_selector:
@@ -93,15 +97,16 @@ topic api_integration:
          inputs:
             cityName: string
          outputs:
-            temperature: number
+            temperature: object
+               complex_data_type_name: "lightning__integerType"
             conditions: string
-            humidity: number
+            humidity: object
+               complex_data_type_name: "lightning__integerType"
             success: boolean
             error_message: string
          target: "apex://WeatherService"
 
       # Apex-based API integration
-
       process_payment:
          description: "Process payment via external payment gateway using Apex"
          inputs:
@@ -116,14 +121,13 @@ topic api_integration:
          target: "apex://PaymentGatewayController"
          
       # Flow-based tracking
-
       track_shipment:
          description: "Track shipment via external shipping API"
          inputs:
             tracking_number: string
             carrier: string
          outputs:
-            status: object
+            status: string
             estimated_delivery: string
             success: boolean
          target: "flow://TrackShipment"

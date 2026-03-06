@@ -2,8 +2,9 @@
 # Demonstrates how to call a topic as a tool (delegation) rather than transitioning to it
 
 config:
-   agent_name: "TopicDelegation"
+   developer_name: "TopicDelegation"
    agent_label: "TopicDelegation"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates calling topics as tools"
 
 variables:
@@ -17,7 +18,10 @@ system:
 
 start_agent topic_selector:
    description: "Main entry point"
+   
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          start: @utils.transition to @topic.general_support
 

@@ -1,9 +1,10 @@
-# ComplexStateManagement Agent - Advanced State Manipulation
+# ComplexStateManagement - Advanced State Manipulation
 # This agent demonstrates complex object and list operations for sophisticated state management
 
 config:
-   agent_name: "ComplexStateManagement_Agent"
-   agent_label: "Task Manager Agent"
+   developer_name: "ComplexStateManagement"
+   agent_label: "ComplexStateManagement"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Manages a todo list with complex state operations"
 
 variables:
@@ -38,6 +39,8 @@ start_agent topic_selector:
    description: "Welcome users and begin task management"
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          begin_task_management: @utils.transition to @topic.task_management
             description: "Start managing tasks with complex state operations"

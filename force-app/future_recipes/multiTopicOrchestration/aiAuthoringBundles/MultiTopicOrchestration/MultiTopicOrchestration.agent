@@ -1,9 +1,10 @@
-# MultiTopicOrchestration Agent
+# MultiTopicOrchestration
 # Demonstrates complex multi-topic workflows with orchestration patterns
 
 config:
-   agent_name: "MultiTopicOrchestration_Agent"
-   agent_label: "Multi-Topic Orchestration Agent"
+   developer_name: "MultiTopicOrchestration"
+   agent_label: "MultiTopicOrchestration"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates complex multi-topic orchestration with specialized topics"
 
 

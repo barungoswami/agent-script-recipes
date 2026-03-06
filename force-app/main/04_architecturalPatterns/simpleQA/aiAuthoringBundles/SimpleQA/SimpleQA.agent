@@ -1,9 +1,10 @@
-# SimpleQA Agent - Basic Question & Answer Agent
-# This agent demonstrates how to create a focused Q&A agent with clear instructions
+# SimpleQA - Focused Question & Answer Agent
+# Demonstrates creating a single-topic Q&A agent with clear instructions and knowledge retrieval
 
 config:
-   agent_name: "SimpleQA_Agent"
-   agent_label: "Product FAQ Agent"
+   developer_name: "SimpleQA"
+   agent_label: "SimpleQA"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Answers common questions about products and services"
 
 # System block defines the agent's overall personality and capabilities
@@ -42,8 +43,9 @@ topic product_qa:
          outputs:
             product_details: string
                description: "Detailed product information including features, specifications, and description"
-            price: number
+            price: object
                description: "Current price of the product"
+               complex_data_type_name: "lightning__currencyType"
             in_stock: boolean
                description: "Indicates whether the product is currently in stock and available"
          target: "flow://GetProductInfo"

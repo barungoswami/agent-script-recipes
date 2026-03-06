@@ -62,7 +62,7 @@ jobs:
               id: run-code-analyzer
               uses: forcedotcom/run-code-analyzer@v2
               with:
-                  run-arguments: --workspace "force-app/**" --view detail --output-file "sca-results.csv" --config-file "code-analyzer.yml"
+                  run-arguments: --workspace "force-app/main" --view detail --output-file "sca-results.csv" --config-file "code-analyzer.yml"
                   results-artifact-name: code-analyzer-results
                   github-token: ${{ github.token }}
 
@@ -112,9 +112,17 @@ jobs:
             - name: 'Create scratch org'
               run: sf org create scratch -f config/project-scratch-def.json -a scratch-org -d -y 1 -w 10
 
+            # Wait for scratch org to be fully ready
+            - name: 'Wait for scratch org initialization'
+              run: sleep 120
+
+            # Assign Manage Prompt Template permission set
+            - name: 'Assign Manage Prompt Template permission set'
+              run: sf org assign permset -n EinsteinGPTPromptTemplateManager
+
             # Deploy source to scratch org
             - name: 'Push source to scratch org'
-              run: sf project deploy start
+              run: sf project deploy start --dev-debug
 
             # Assign permission sets
             - name: 'Assign permission sets to default user'

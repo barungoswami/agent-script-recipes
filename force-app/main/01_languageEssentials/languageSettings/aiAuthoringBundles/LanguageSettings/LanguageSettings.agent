@@ -1,5 +1,5 @@
-# LanguageSettings
-# Demonstrates how to define the language settings for the agent
+# LanguageSettings - Multilingual Agent Configuration
+# Demonstrates how to define language settings for multilingual agent support
 
 system:
    messages:
@@ -9,8 +9,9 @@ system:
    instructions: "You are a multilingual assistant. Respond in the user's preferred language."
 
 config:
-    agent_name: "LanguageSettings"
+    developer_name: "LanguageSettings"
     agent_label: "LanguageSettings"
+    agent_type: "AgentforceEmployeeAgent"
     description: "Demonstrates language configuration and localization"
 
 # Language Configuration
@@ -28,6 +29,8 @@ start_agent topic_selector:
            If they speak French, say "Bonjour".
            If they speak German, say "Hallo".
            Otherwise, use English.
+
+           Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
 
       actions:
          pass: @utils.transition to @topic.main_topic

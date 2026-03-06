@@ -2,8 +2,9 @@
 # Complete real-world customer service agent
 
 config:
-   agent_name: "CustomerService_Agent"
+   developer_name: "CustomerService_Agent"
    agent_label: "Customer Service Agent"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Complete customer service agent with issue classification, resolution workflows, and escalation"
 
 variables:
@@ -62,6 +63,8 @@ start_agent topic_selector:
    description: "Welcome customers and begin issue triage and resolution"
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          begin_triage: @utils.transition to @topic.triage
             description: "Start the customer service triage process"

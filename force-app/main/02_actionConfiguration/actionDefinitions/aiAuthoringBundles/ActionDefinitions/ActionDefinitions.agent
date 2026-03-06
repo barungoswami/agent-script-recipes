@@ -2,8 +2,9 @@
 # This agent demonstrates how to define and use actions (external tools/APIs)
 
 config:
-   agent_name: "ActionDefinitions"
+   developer_name: "ActionDefinitions"
    agent_label: "ActionDefinitions"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Provides weather information by calling external weather APIs"
 
 # Variables to store weather data
@@ -76,6 +77,7 @@ topic weather_lookup:
          outputs:
             forecast_data: list[object]
                description: "List of daily forecast objects containing temperature, conditions, and precipitation data"
+               complex_data_type_name: "lightning__textType"
          target: "flow://GetWeatherForecast"
 
       # Action 3: Send weather alert

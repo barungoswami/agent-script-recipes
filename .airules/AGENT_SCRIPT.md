@@ -58,7 +58,7 @@ Top-level blocks MUST appear in this order:
 ```agentscript
 # 1. CONFIG (required) - Agent metadata
 config:
-   agent_name: "My_Agent"
+   developer_name: "DescriptiveName"
    ...
 
 # 2. VARIABLES (optional) - State management
@@ -109,9 +109,8 @@ topic my_topic:
 1. `description` (required)
 2. `system` (optional - for instruction overrides)
 3. `actions` (optional - action definitions)
-4. `before_reasoning` (optional)
-5. `reasoning` (required)
-6. `after_reasoning` (optional)
+4. `reasoning` (required)
+5. `after_reasoning` (optional)
 
 ### Within `reasoning` blocks:
 
@@ -124,7 +123,7 @@ topic my_topic:
 
 Every Agent Script MUST have:
 
-- `config` block with `agent_name`
+- `config` block with `developer_name`
 - `system` block with `messages.welcome`, `messages.error`, and `instructions`
 - `start_agent` block with `description` and `reasoning.actions`
 - At least one `topic` block with `description` and `reasoning`
@@ -133,7 +132,7 @@ Every Agent Script MUST have:
 
 ## Naming Rules
 
-All names (agent_name, topic names, variable names, action names):
+All names (developer_name, topic names, variable names, action names):
 
 - Can contain only letters, numbers, and underscores
 - Must begin with a letter
@@ -154,7 +153,7 @@ All names (agent_name, topic names, variable names, action names):
 ```agentscript
 # This is a comment
 config:
-   agent_name: "My_Agent"  # Inline comment
+   developer_name: "My_Agent"  # Inline comment
 ```
 
 ---
@@ -166,10 +165,10 @@ config:
 ```agentscript
 config:
    # Required
-   agent_name: "My_Agent_Name"           # Unique identifier (letters, numbers, underscores)
+   developer_name: "DescriptiveName"           # Unique identifier (letters, numbers, underscores)
 
    # Optional with defaults
-   agent_label: "My Agent"               # Display name (defaults to normalized agent_name)
+   agent_label: "DescriptiveName"               # Display name (defaults to normalized developer_name)
    description: "Agent description"       # What the agent does
    agent_type: "AgentforceServiceAgent"  # or "AgentforceEmployeeAgent"
    default_agent_user: "user@example.com" # Required for AgentforceServiceAgent
@@ -257,12 +256,6 @@ topic my_topic:
             result: string
          target: "flow://MyFlow"
 
-   # Optional: Runs before each reasoning cycle
-   before_reasoning:
-      run @actions.some_action
-         with param=@variables.value
-         set @variables.result = @outputs.result
-
    # Required: Reasoning configuration
    reasoning:
       instructions:->
@@ -328,6 +321,60 @@ actions:
             filter_from_agent: False
             is_displayable: True
       target: "flow://GetCustomerInfo"
+```
+
+### Output Parameter Complex Data Types
+
+When defining action output parameters, use the `object` type with a `complex_data_type_name` to map to specific Salesforce data types. This is required when the platform expects a particular data type mapping (e.g., Integer outputs from Apex `@InvocableMethod` classes).
+
+**Primitive Types:**
+
+| `complex_data_type_name`  | Description                    |
+| ------------------------- | ------------------------------ |
+| `lightning__integerType`  | Integer numbers                |
+| `lightning__booleanType`  | True/false values              |
+| `lightning__dateType`     | Date values                    |
+| `lightning__dateTimeType` | Date and time values           |
+| `lightning__doubleType`   | Decimal/floating point numbers |
+
+**Complex Types:**
+
+| `complex_data_type_name` | Description             |
+| ------------------------ | ----------------------- |
+| `lightning__objectType`  | Complex data structures |
+| `lightning__listType`    | Arrays/lists of items   |
+
+**Apex Class Types:**
+
+Reference custom Apex classes using the format `@apexClassType/<namespace>__<ClassName>`:
+
+```agentscript
+# Example: custom Apex class output
+outputs:
+   document: object
+      description: "Signed document wrapper"
+      complex_data_type_name: "@apexClassType/c__AgentSentForSignature$DocumentWrapperSign"
+```
+
+**Syntax:**
+
+```agentscript
+actions:
+   get_orders:
+      description: "Retrieve orders for a customer"
+      inputs:
+         customer_id: string
+            description: "The customer's Salesforce record ID"
+      outputs:
+         success: object
+            description: "Whether the lookup was successful"
+            complex_data_type_name: "lightning__booleanType"
+         order_count: object
+            description: "Total number of orders found"
+            complex_data_type_name: "lightning__integerType"
+         order_summary: string
+            description: "Formatted summary of orders"
+      target: "apex://OrderLookupService"
 ```
 
 ---
@@ -420,7 +467,7 @@ go_next: @utils.transition to @topic.target_topic
    description: "Description for LLM"
 ```
 
-### In Directive Blocks (`before_reasoning`, `after_reasoning`):
+### In Directive Blocks (`after_reasoning`):
 
 ```agentscript
 transition to @topic.target_topic
@@ -453,13 +500,6 @@ Note: `else if` is not currently supported.
 ### Transitions in Directive Blocks
 
 ```agentscript
-before_reasoning:
-   if @variables.not_authenticated:
-      transition to @topic.login
-
-   if @variables.session_expired:
-      transition to @topic.session_expired
-
 after_reasoning:
    if @variables.completed:
       transition to @topic.summary
@@ -528,7 +568,7 @@ instructions:->
 - `@topic.<name>` - Reference a topic by name
 - `@variables.<name>` - Reference a variable
 - `@outputs.<name>` - Reference action output (in post-action context)
-- `@inputs.<name>` - Reference action input (in procedure context)
+- `@inputs.<name>` - Reference action input (procedure context only — see warning below)
 - `@utils.<utility>` - Reference utility function (escalate, transition to, setVariables)
 
 ---
@@ -539,7 +579,7 @@ instructions:->
 
 ```agentscript
 config:
-   agent_name: "Simple_QA"
+   developer_name: "Simple_QA"
 
 system:
    messages:
@@ -612,15 +652,13 @@ topic customer_service:
             email: string
          target: "flow://FetchCustomer"
 
-   before_reasoning:
-      if @variables.customer_id and not @variables.customer_loaded:
-         run @actions.fetch_customer
-            with id=@variables.customer_id
-            set @variables.customer_name = @outputs.name
-            set @variables.customer_loaded = True
-
    reasoning:
       instructions:->
+         if @variables.customer_id and not @variables.customer_loaded:
+            run @actions.fetch_customer
+               with id=@variables.customer_id
+               set @variables.customer_name = @outputs.name
+               set @variables.customer_loaded = True
          if @variables.customer_name:
             | Hello, {!@variables.customer_name}!
          else:
@@ -634,7 +672,7 @@ topic customer_service:
 Before finalizing an Agent Script, verify:
 
 - [ ] Block ordering is correct (config → variables → system → connections → knowledge → language → start_agent → topics)
-- [ ] `config` block has `agent_name` (and `default_agent_user` for service agents)
+- [ ] `config` block has `developer_name` (and `default_agent_user` for service agents)
 - [ ] `system` block has `messages.welcome`, `messages.error`, and `instructions`
 - [ ] `start_agent` block exists with at least one transition action
 - [ ] Each `topic` has a `description` and `reasoning` block
@@ -730,4 +768,83 @@ Before finalizing an Agent Script, verify:
     # CORRECT - only @actions support post-action directives
     process: @actions.process_order
        set @variables.result = @outputs.result
+    ```
+
+8. **Referencing actions by bare name instead of `@actions.`:**
+
+    Always use `@actions.action_name` when referencing actions — in `run` statements, template expressions `{!...}`, and instruction text. Never use the bare action name.
+
+    ```agentscript
+    # WRONG - bare action name in run statement
+    run set_user_name
+
+    # CORRECT
+    run @actions.set_user_name
+
+    # WRONG - bare action name in instruction text
+    | Add items to the cart using add_to_cart
+
+    # CORRECT
+    | Add items to the cart using {!@actions.add_to_cart}
+
+    # WRONG - bare action name in instructions referencing a reasoning action
+    | If continuing a conversation, route to begin_data_management.
+
+    # CORRECT
+    | If continuing a conversation, route to {!@actions.begin_data_management}.
+    ```
+
+9. **Using `run @actions.X` where X is only a reasoning-level utility (not a topic-level action):**
+
+    The `run @actions.X` directive in `instructions` procedures resolves against the **topic-level `actions`** block (those with a `target:`). It cannot invoke actions defined only in `reasoning.actions` (such as `@utils.setVariables`). If the topic has no top-level `actions` block, you'll get: _"Action '@actions.X' not found … No actions defined in this topic."_
+
+    ```agentscript
+    # WRONG - set_user_name is a @utils.setVariables utility, not a topic-level action
+    reasoning:
+       instructions:->
+          run @actions.set_user_name
+          | Collect the user's name.
+       actions:
+          set_user_name: @utils.setVariables
+             with user_name=...
+
+    # CORRECT - remove the run; the LLM will invoke set_user_name during reasoning
+    reasoning:
+       instructions:->
+          | Collect the user's name.
+       actions:
+          set_user_name: @utils.setVariables
+             with user_name=...
+
+    # ALSO VALID - run works when the action is defined at the topic level with a target
+    actions:
+       fetch_customer:
+          inputs:
+             id: string
+          outputs:
+             name: string
+          target: "flow://FetchCustomer"
+    reasoning:
+       instructions:->
+          run @actions.fetch_customer
+             with id=@variables.customer_id
+             set @variables.customer_name = @outputs.name
+    ```
+
+10. **Using `@inputs` in `set` directives (causes unknown deploy error):**
+
+    ```agentscript
+    # WRONG - @inputs in set causes unknown error at deploy time
+    verify: @actions.verify_customer
+       with account_number=...
+       set @variables.account_number = @inputs.account_number
+       set @variables.customer_name = @outputs.customer_name
+
+    # CORRECT - use @utils.setVariables to capture input, only @outputs in set
+    collect_input: @utils.setVariables
+       description: "Collect the account number from the user"
+       with account_number=...
+    verify: @actions.verify_customer
+       with account_number=@variables.account_number
+       set @variables.customer_name = @outputs.customer_name
     ```

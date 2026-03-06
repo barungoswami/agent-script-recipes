@@ -1,4 +1,4 @@
-# ExternalAPIIntegration Agent
+# ExternalAPIIntegration
 
 ## Overview
 
@@ -43,13 +43,15 @@ graph TD
 ```agentscript
 actions:
    get_weather:
-      description: "Fetch weather data from external API via Flow"
+      description: "Fetch weather data from external API via Apex"
       inputs:
          cityName: string
       outputs:
-         temperature: number
+         temperature: object
+            complex_data_type_name: "lightning__integerType"
          conditions: string
-         humidity: number
+         humidity: object
+            complex_data_type_name: "lightning__integerType"
          success: boolean
          error_message: string
       target: "apex://WeatherService"
@@ -83,7 +85,7 @@ actions:
          tracking_number: string
          carrier: string
       outputs:
-         status: object
+         status: string
          estimated_delivery: string
          success: boolean
       target: "flow://TrackShipment"
@@ -94,16 +96,17 @@ actions:
 ```agentscript
 reasoning:
    instructions:->
-      | Identify the action based on the user's request. You can:
-        - Get weather
-        - Process payment
-        - Track shipment
+      | Identify the action based on the users request. You can get weather, process payment or help with shipment.
 
-      | If an action needs user input, prompt the user for the needed info before
-        performing the action. For example:
-        - Weather: need city name
-        - Payment: need amount and payment token
-        - Shipping: need tracking number
+      | If an action needs user input, prompt the user requesting the needed info before you perform the action.
+        For example for fetching weather you will need city name before you can proceed.
+        For making payment you need amount and payment token and for tracking shipping you need a tracking number.
+
+      | When reporting weather, use the data in {!@variables.temperature}, {!@variables.humidity}, and {!@variables.conditions}.
+        When a payment is processed, confirm with the {!@variables.transaction_id}.
+        When tracking a shipment, provide the status from {!@variables.shipment_status}.
+
+        If an API error occurs (checked via {!@variables.api_error_message}), apologize and show the error.
 
    actions:
       fetch_weather: @actions.get_weather
@@ -111,8 +114,8 @@ reasoning:
          set @variables.temperature = @outputs.temperature
          set @variables.humidity = @outputs.humidity
          set @variables.conditions = @outputs.conditions
-         set @variables.api_response_status = ""
-         set @variables.api_error_message = ""
+         set @variables.api_response_status = @outputs.success
+         set @variables.api_error_message = @outputs.error_message
 
       make_payment: @actions.process_payment
          with amount=...
@@ -135,21 +138,29 @@ reasoning:
 
 ```agentscript
 variables:
-   # API tracking
+   # API request tracking
    api_request_id: mutable string = ""
-   api_response_status: mutable string = ""
+      description: "The ID of the current API request."
+   api_response_status: mutable boolean = False
+      description: "The status of the API response (e.g., true for success, false for failure)."
    api_error_message: mutable string = ""
+      description: "Error message returned by the API, if any."
 
    # Weather API example
-   temperature: mutable string = ""
-   humidity: mutable string = ""
+   temperature: mutable number = 0
+      description: "The current temperature fetched from the weather API."
+   humidity: mutable number = 0
+      description: "The current humidity percentage fetched from the weather API."
    conditions: mutable string = ""
+      description: "The current weather conditions (e.g., Sunny, Cloudy)."
 
    # Payment API example
    transaction_id: mutable string = ""
+      description: "The unique transaction ID returned after a payment."
 
    # Shipping API example
-   shipment_status: mutable object = {}
+   shipment_status: mutable string = ""
+      description: "The status object of the shipment tracking."
 ```
 
 ### Complete Action Definitions
@@ -157,13 +168,15 @@ variables:
 ```agentscript
 actions:
    get_weather:
-      description: "Fetch weather data from external API via Flow"
+      description: "Fetch weather data from external API via Apex"
       inputs:
          cityName: string
       outputs:
-         temperature: number
+         temperature: object
+            complex_data_type_name: "lightning__integerType"
          conditions: string
-         humidity: number
+         humidity: object
+            complex_data_type_name: "lightning__integerType"
          success: boolean
          error_message: string
       target: "apex://WeatherService"
@@ -187,7 +200,7 @@ actions:
          tracking_number: string
          carrier: string
       outputs:
-         status: object
+         status: string
          estimated_delivery: string
          success: boolean
       target: "flow://TrackShipment"
@@ -239,7 +252,7 @@ User: Track my shipment 1Z999AA10123456784
 
 [Agent calls track_shipment via Flow]
   - TrackShipment flow with tracking_number and carrier="USPS"
-  - Returns: status object, estimated_delivery="2025-01-22"
+  - Returns: status="In Transit", estimated_delivery="2025-01-22"
 
 Agent: 📦 Shipment Status:
 

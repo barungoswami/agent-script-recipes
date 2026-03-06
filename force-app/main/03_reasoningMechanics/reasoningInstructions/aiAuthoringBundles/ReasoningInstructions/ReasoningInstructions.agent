@@ -2,8 +2,9 @@
 # This agent demonstrates how to build instructions dynamically using procedures
 
 config:
-   agent_name: "ReasoningInstructions"
+   developer_name: "ReasoningInstructions"
    agent_label: "ReasoningInstructions"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Checks order status and provides dynamic instructions based on order state"
 
 variables:
@@ -50,13 +51,14 @@ topic order_status:
                description: "Current order status (pending, shipped, delivered, cancelled)"
             details: object
                description: "Detailed order information including items, dates, and customer information"
+               complex_data_type_name: "lightning__recordInfoType"
             tracking_number: string
                description: "Shipping tracking number if the order has been shipped"
          target: "flow://GetOrderStatus"
 
    reasoning:
       # Procedural instructions: Use -> to create a procedure
-      # This runs BEFORE the agent starts reasoning
+      # This runs when the agent starts reasoning
       # It allows you to call actions and build instructions dynamically
       instructions:->
          # First, check if we have an order ID
@@ -73,8 +75,13 @@ topic order_status:
                set @variables.order_details = @outputs.details
                set @variables.tracking_number = @outputs.tracking_number
 
-         # Now build instructions based on the order status
-         | The customer's order {!@variables.order_id} has status: {!@variables.order_status}
+         if @variables.order_status:
+            # Now build instructions based on the order status
+            | The customer's order {!@variables.order_id} has status: {!@variables.order_status}
+
+         if @variables.order_id and not @variables.order_status:
+            | No order was found for order ID {!@variables.order_id}.
+              Ask the customer to verify the order number and try again.
 
          # Different instructions for different statuses
          if @variables.order_status == "pending":
@@ -87,7 +94,6 @@ topic order_status:
             | The order has been shipped! Provide:
               Tracking number: {!@variables.tracking_number}
               Estimated delivery date from order details
-              Link to track shipment
               Remind them to check delivery address
 
          if @variables.order_status == "delivered":

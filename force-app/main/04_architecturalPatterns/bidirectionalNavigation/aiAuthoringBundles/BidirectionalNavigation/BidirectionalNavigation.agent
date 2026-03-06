@@ -1,9 +1,10 @@
-# BidirectionalNavigation
-# Demonstrates bidirectional navigation pattern (handoff and return) using transitions
+# BidirectionalNavigation - Topic Handoff and Return Pattern
+# Demonstrates bidirectional navigation where topics delegate to specialists and receive control back
 
 config:
-   agent_name: "BidirectionalNavigation"
+   developer_name: "BidirectionalNavigation"
    agent_label: "BidirectionalNavigation"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates bidirectional navigation pattern (handoff and return)"
 
 variables:
@@ -31,6 +32,8 @@ start_agent topic_selector:
    description: "Welcome customers and route them to the appropriate support specialist"
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          general_support: @utils.transition to @topic.general_support
             description: "Start with general customer support"

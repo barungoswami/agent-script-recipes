@@ -50,9 +50,15 @@ start_agent topic_selector:
    description: "Welcome users and determine their hotel service needs"
 
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+         Route to the matching topic immediately based on the user's message.
       actions:
          browse_hotels: @utils.transition to @topic.hotel_browse
             description: "Browse and search for available hotels"
+
+         hotel_booking: @utils.transition to @topic.hotel_booking
+            description: "Book a hotel"
 
          view_booking: @utils.transition to @topic.hotel_confirmation
             description: "View existing booking confirmations"
@@ -62,7 +68,7 @@ topic hotel_browse:
    description: "Browse available hotels and view information"
 
 topic hotel_booking:
-   description: "Handle hotel booking and reservation"
+   description: "Book hotel"
 
 topic hotel_confirmation:
    description: "Confirm booking and provide details"
@@ -75,8 +81,8 @@ Move between topics using `@utils.transition to @topic.name`:
 ```agentscript
 reasoning:
    actions:
-      proceed_to_booking: @utils.transition to @topic.hotel_booking
-         description: "Move to booking when user wants to reserve a hotel"
+      browse_hotels: @utils.transition to @topic.hotel_browse
+         description: "Browse and search for available hotels"
 ```
 
 ### Conditional Transition Availability
@@ -98,27 +104,11 @@ Transition after an action completes using `transition to`:
 actions:
    create_booking: @actions.create_booking
       with hotel_name=...
-      with check_in=@variables.check_in_date
-      with check_out=@variables.check_out_date
-      set @variables.hotel_name = @inputs.hotel_name
-      set @variables.booking_id = @outputs.booking_id
-      set @variables.booking_confirmed = True
-      # Automatically move to confirmation after booking
-      transition to @topic.hotel_confirmation
-```
-
-### Storing Action Inputs
-
-Capture inputs that the LLM provides:
-
-```agentscript
-actions:
-   search_hotels: @actions.search_hotels
-      with location=...
       with check_in=...
       with check_out=...
-      set @variables.check_in_date = @inputs.check_in
-      set @variables.check_out_date = @inputs.check_out
+      set @variables.booking_id = @outputs.booking_id
+      set @variables.booking_confirmed = @outputs.success
+      transition to @topic.hotel_confirmation
 ```
 
 ## Key Code Snippets
@@ -141,43 +131,35 @@ topic hotel_browse:
                description: "Check-out date in ISO format (YYYY-MM-DD)"
          outputs:
             hotels: list[object]
-               description: "List of available hotel objects"
+               description: "List of available hotel objects with name, price, rating, and amenities information"
+               complex_data_type_name: "lightning__recordInfoType" # This is the name of the complex data type that is used to store the hotel objects
          target: "flow://SearchHotels"
 
    reasoning:
       instructions:->
          | Help users find the perfect hotel.
 
-           Current search criteria:
+           Ensure you know:
+           - desired hotel location
+           - check-in date
+           - check-out date
 
-         if @variables.check_in_date:
-            | - Check-in: {!@variables.check_in_date}
-         else:
-            | - Check-in: Not set
+           Once you have this information, look for available hotels using {!@actions.search_hotels}.
 
-         if @variables.check_out_date:
-            | - Check-out: {!@variables.check_out_date}
-         else:
-            | - Check-out: Not set
-
-         | When users are ready to book, use the proceed_to_booking action.
+           Show the results to the user and ask which hotel they would like to book.
 
       actions:
          search_hotels: @actions.search_hotels
             with location=...
             with check_in=...
             with check_out=...
-            transition to @topic.hotel_booking
-
-         proceed_to_booking: @utils.transition to @topic.hotel_booking
-            description: "Move to booking when user wants to reserve a hotel"
 ```
 
 ### Complete Topic: Hotel Booking
 
 ```agentscript
 topic hotel_booking:
-   description: "Handle hotel booking and reservation"
+   description: "Book hotel"
 
    actions:
       create_booking:
@@ -186,43 +168,44 @@ topic hotel_booking:
             hotel_name: string
                description: "Name of the hotel to book"
             check_in: string
-               description: "Check-in date"
+               description: "Check-in date in ISO format (YYYY-MM-DD)"
             check_out: string
-               description: "Check-out date"
+               description: "Check-out date in ISO format (YYYY-MM-DD)"
          outputs:
             booking_id: string
                description: "Unique booking confirmation identifier"
             success: boolean
-               description: "Whether the booking was created successfully"
+               description: "Indicates whether the booking was created successfully"
          target: "flow://CreateBooking"
 
    reasoning:
       instructions:->
-         | Complete the booking for the customer.
+         | First, if the hotel name, check-in date, or check-out date are not yet saved, use {!@actions.collect_booking_info} to save them from the conversation.
 
-           Booking details:
+           Then confirm the booking details with the user before creating the reservation.
 
-         if @variables.hotel_name:
-            | - Hotel: {!@variables.hotel_name}
-         else:
-            | - Hotel: Not selected
-
-         | - Check-in: {!@variables.check_in_date}
+           Show:
+           - Hotel: {!@variables.hotel_name}
+           - Check-in: {!@variables.check_in_date}
            - Check-out: {!@variables.check_out_date}
 
-         | Once booking is complete, transition to hotel_confirmation topic.
+           Ask the user to confirm these details are correct.
+           Once the user confirms, complete the booking using {!@actions.create_booking}.
 
       actions:
-         create_booking: @actions.create_booking
+         collect_booking_info: @utils.setVariables
+            description: "Save the hotel name and travel dates from the conversation"
             with hotel_name=...
-            with check_in=...
-            with check_out=...
+            with check_in_date=...
+            with check_out_date=...
+
+         create_booking: @actions.create_booking
+            with hotel_name=@variables.hotel_name
+            with check_in=@variables.check_in_date
+            with check_out=@variables.check_out_date
             set @variables.booking_id = @outputs.booking_id
             set @variables.booking_confirmed = @outputs.success
             transition to @topic.hotel_confirmation
-
-         go_to_confirmation: @utils.transition to @topic.hotel_confirmation
-            description: "Move to confirmation after successful booking"
 ```
 
 ### Complete Topic: Hotel Confirmation
@@ -233,7 +216,7 @@ topic hotel_confirmation:
 
    reasoning:
       instructions:->
-         | The booking has been confirmed!
+         | Confirm the booking and provide its details to the user.
 
            Confirmation details:
            - Booking ID: {!@variables.booking_id}
@@ -241,8 +224,8 @@ topic hotel_confirmation:
            - Check-in: {!@variables.check_in_date}
            - Check-out: {!@variables.check_out_date}
 
-           Provide these details to the customer and ask if they need anything else.
-           If they want to make another booking, use start_new_booking action.
+           Ask if they need anything else.
+           If they want to make another booking, use {!@actions.start_new_booking} action.
 
       actions:
          start_new_booking: @utils.transition to @topic.hotel_browse
@@ -260,25 +243,23 @@ Agent: Welcome to our hotel booking service! I can help you browse hotels, make 
 
 User: I need a hotel in San Francisco for March 15-17
 
-[Agent calls search_hotels action]
-[Stores: check_in_date="2025-03-15", check_out_date="2025-03-17"]
+[Agent calls search_hotels action with: check_in_date="2026-03-15", check_out_date="2026-03-17", location:"San Francisco"]
 
 Agent: I found several hotels in San Francisco for March 15-17:
-       1. Bay View Hotel - $180/night
-       2. Downtown Plaza - $150/night
-       3. Airport Inn - $100/night
+       1. Grand Plaza
+       2. Seaside Resort
 
        Which one interests you?
 
-User: I'll take the Bay View Hotel
+User: I'll take the Grand Plaza
 
-Agent: Excellent choice! Let me help you book the Bay View Hotel.
+Agent: Excellent choice! Let me help you book the Grand Plaza Hotel.
 ```
 
-**[Agent calls proceed_to_booking → transitions to hotel_booking]**
+**[Agent calls search_hotels action → transitions to hotel_booking]**
 
 ```text
-Agent: I'm ready to complete your booking at Bay View Hotel.
+Agent: I'm ready to complete your booking at Grand Plaza Hotel.
        - Check-in: March 15
        - Check-out: March 17
 
@@ -287,7 +268,7 @@ Agent: I'm ready to complete your booking at Bay View Hotel.
 User: Yes, that's correct
 
 [Agent calls create_booking action]
-[Stores: hotel_name="Bay View Hotel", booking_id="BK789456"]
+[Stores: hotel_name="Grand Plaza Hotel", booking_id="BK789456"]
 [Auto-transitions to hotel_confirmation]
 ```
 
@@ -298,7 +279,7 @@ Agent: Your booking is confirmed! 🎉
 
        Confirmation details:
        - Booking ID: BK789456
-       - Hotel: Bay View Hotel
+       - Hotel: Grand Plaza Hotel
        - Check-in: March 15
        - Check-out: March 17
 
@@ -351,8 +332,8 @@ Good for: Exploratory interfaces, comparison shopping
 **Good:**
 
 ```agentscript
-proceed_to_booking: @utils.transition to @topic.hotel_booking
-   description: "Move to booking when user wants to reserve a hotel"
+start_new_booking: @utils.transition to @topic.hotel_browse
+   description: "Start a new hotel search and booking"
 ```
 
 **Poor:**
@@ -360,18 +341,6 @@ proceed_to_booking: @utils.transition to @topic.hotel_booking
 ```agentscript
 go_next: @utils.transition to @topic.next
    description: "Go next"
-```
-
-### State Management
-
-Store state in variables before transitioning:
-
-```agentscript
-actions:
-   search_hotels: @actions.search_hotels
-      with check_in=...
-      set @variables.check_in_date = @inputs.check_in
-      # State preserved for next topic
 ```
 
 ## What's Next

@@ -8,8 +8,9 @@ system:
        error: "Unable to process that action. Please check permissions and ticket status."
 
 config:
-   agent_name: "DynamicActionRouting"
+   developer_name: "DynamicActionRouting"
    agent_label: "DynamicActionRouting"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Routes support tickets with context-aware action availability"
 
 variables:

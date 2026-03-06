@@ -2,11 +2,12 @@
 # This is the simplest possible agent demonstrating the basic structure of Agent Script
 
 # Config block: Defines agent metadata and identification
-# The agent_name must follow naming rules: letters, numbers, underscores only
+# The developer_name must follow naming rules: letters, numbers, underscores only
 # It's used internally to identify this agent within the system
 config:
-   agent_name: "HelloWorld"
+   developer_name: "HelloWorld"
    agent_label: "HelloWorld"
+   agent_type: "AgentforceEmployeeAgent"
    description: "A minimal agent that greets users and engages using poems"
 
 # System block: Contains global configuration and messages

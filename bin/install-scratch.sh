@@ -18,11 +18,15 @@ echo "Creating scratch org..." && \
 sf org create scratch -f config/project-scratch-def.json -a $ORG_ALIAS -d -y 30 && \
 echo "" && \
 
+echo "Assigning Manage Prompt Templates permission set..."
+sf org assign permset -n EinsteinGPTPromptTemplateManager && \
+echo "" && \
+
 echo "Pushing source..." && \
 sf project deploy start && \
 echo "" && \
 
-echo "Assigning permission sets..." && \
+echo "Assigning Agent Script permission sets..." && \
 sf org assign permset -n Agent_Script_Recipes_Data && \
 sf org assign permset -n Agent_Script_Recipes_App && \
 echo "" && \
