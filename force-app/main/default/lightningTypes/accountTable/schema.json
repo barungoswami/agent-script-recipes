@@ -1,0 +1,5 @@
+{
+  "title" : "Account List Table",
+  "description" : "Custom Lightning Type for displaying accounts in a data table",
+  "lightning:type" : "@apexClassType/c__AccountList"
+}

@@ -1,0 +1,53 @@
+<template>
+    <lightning-card title="Facility Lookup" icon-name="standard:account">
+        <div class="slds-p-around_medium">
+            
+            <!-- Info Box -->
+            <div class="slds-box slds-box_x-small slds-theme_info slds-m-bottom_medium">
+                <div class="slds-media slds-media_center">
+                    <div class="slds-media__figure">
+                        <lightning-icon 
+                            icon-name="utility:search" 
+                            size="small" 
+                            variant="inverse">
+                        </lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <p class="slds-text-body_small">
+                            Search and select a Facility to view its details.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Record Picker -->
+            <lightning-record-picker
+                label="Select Facility"
+                placeholder={placeholder}
+                object-api-name="Account"
+                onchange={handleChange}
+                disabled={readOnly}>
+            </lightning-record-picker>
+
+            <!-- Selected Account Info -->
+            <template if:true={selectedRecordId}>
+                <div class="slds-box slds-box_x-small slds-theme_success slds-m-top_medium">
+                    <div class="slds-media slds-media_center">
+                        <div class="slds-media__figure">
+                            <lightning-icon 
+                                icon-name="utility:check" 
+                                size="small" 
+                                variant="inverse">
+                            </lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <p class="slds-text-body_small">
+                                <strong>Facility Selected:</strong> {selectedRecordId}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

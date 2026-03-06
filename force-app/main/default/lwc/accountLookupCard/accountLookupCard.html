@@ -1,0 +1,203 @@
+<template>
+    <template if:true={hasData}>
+        <lightning-card icon-name="standard:account">
+            <!-- Card Header with Account Name and Actions -->
+            <div slot="title">
+                <div class="slds-media slds-media_center">
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <span class="slds-text-heading_medium">{accountName}</span>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div slot="actions">
+                <lightning-button
+                    label="View Record"
+                    onclick={handleNavigateToAccount}
+                    variant="brand"
+                    icon-name="utility:open">
+                </lightning-button>
+            </div>
+
+            <!-- Card Body -->
+            <div class="slds-p-around_medium">
+                
+                <!-- Account ID Badge -->
+                <div class="slds-m-bottom_medium">
+                    <lightning-badge label={accountId} icon-name="utility:record"></lightning-badge>
+                </div>
+
+                <!-- Basic Information Section -->
+                <div class="slds-box slds-box_x-small slds-m-bottom_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">
+                        <lightning-icon icon-name="utility:info" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                        Basic Information
+                    </h3>
+                    
+                    <div class="slds-grid slds-wrap slds-gutters_small">
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="field-container">
+                                <div class="field-label">Type</div>
+                                <div class="field-value">{accountType}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="field-container">
+                                <div class="field-label">Industry</div>
+                                <div class="field-value">{industry}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="field-container">
+                                <div class="field-label">Rating</div>
+                                <div class="field-value">
+                                    <lightning-badge label={rating} class={ratingVariant}></lightning-badge>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="field-container">
+                                <div class="field-label">Account Source</div>
+                                <div class="field-value">{accountSource}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information Section -->
+                <div class="slds-box slds-box_x-small slds-m-bottom_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">
+                        <lightning-icon icon-name="utility:phone_portrait" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                        Contact Information
+                    </h3>
+                    
+                    <div class="slds-grid slds-wrap slds-gutters_small">
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="field-container">
+                                <div class="field-label">Phone</div>
+                                <div class="field-value">
+                                    <a href={phoneLink}>{phone}</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="field-container">
+                                <div class="field-label">Website</div>
+                                <div class="field-value">
+                                    <a href={website} target="_blank" rel="noopener noreferrer">{website}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Information Section -->
+                <div class="slds-box slds-box_x-small slds-m-bottom_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">
+                        <lightning-icon icon-name="utility:currency" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                        Financial Information
+                    </h3>
+                    
+                    <div class="slds-grid slds-wrap slds-gutters_small">
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="field-container">
+                                <div class="field-label">Annual Revenue</div>
+                                <div class="field-value revenue">{formattedRevenue}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="field-container">
+                                <div class="field-label">Employees</div>
+                                <div class="field-value">{numberOfEmployees}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information Section -->
+                <div class="slds-box slds-box_x-small slds-m-bottom_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">
+                        <lightning-icon icon-name="utility:location" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                        Billing Address
+                    </h3>
+                    
+                    <div class="field-container">
+                        <div class="field-value">{billingAddress}</div>
+                    </div>
+                </div>
+
+                <!-- Owner Information Section -->
+                <div class="slds-box slds-box_x-small slds-m-bottom_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">
+                        <lightning-icon icon-name="utility:user" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                        Owner Information
+                    </h3>
+                    
+                    <div class="field-container">
+                        <div class="field-label">Account Owner</div>
+                        <div class="field-value">{ownerName}</div>
+                    </div>
+                </div>
+
+                <!-- Description Section -->
+                <div class="slds-box slds-box_x-small slds-m-bottom_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">
+                        <lightning-icon icon-name="utility:description" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                        Description
+                    </h3>
+                    
+                    <div class="field-container">
+                        <div class="field-value description-text">{description}</div>
+                    </div>
+                </div>
+
+                <!-- Metadata Section -->
+                <div class="slds-box slds-box_x-small">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">
+                        <lightning-icon icon-name="utility:date_time" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                        Record Information
+                    </h3>
+                    
+                    <div class="slds-grid slds-wrap slds-gutters_small">
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="field-container">
+                                <div class="field-label">Created Date</div>
+                                <div class="field-value">{createdDate}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="field-container">
+                                <div class="field-label">Last Modified</div>
+                                <div class="field-value">{lastModifiedDate}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </lightning-card>
+    </template>
+
+    <!-- Empty State -->
+    <template if:false={hasData}>
+        <lightning-card title="No Account Selected" icon-name="standard:account">
+            <div class="slds-p-around_medium slds-text-align_center">
+                <lightning-icon 
+                    icon-name="utility:search" 
+                    size="large" 
+                    class="slds-m-bottom_small">
+                </lightning-icon>
+                <p class="slds-text-body_regular">
+                    Please select an account to view its details.
+                </p>
+            </div>
+        </lightning-card>
+    </template>
+</template>

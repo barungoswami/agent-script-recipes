@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Account Contact Accordion</masterLabel>
+    <description>Lightning Web Component to display accounts with related contacts in an accordion for Custom Lightning Type</description>
+    <targets>
+        <target>lightning__AgentforceOutput</target>
+    </targets>
+</LightningComponentBundle>

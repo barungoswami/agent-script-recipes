@@ -1,0 +1,273 @@
+<template>
+    <lightning-card title={formTitle} icon-name={formIcon}>
+        <div class="slds-p-around_medium">
+            
+            <!-- Form Header Info -->
+            <div class="slds-box slds-box_x-small slds-theme_info slds-m-bottom_medium">
+                <div class="slds-media slds-media_center">
+                    <div class="slds-media__figure">
+                        <lightning-icon 
+                            icon-name="utility:info" 
+                            size="small" 
+                            variant="inverse">
+                        </lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <p class="slds-text-body_small">
+                            <template if:true={isEditMode}>
+                                Update the fcility information below and click <strong>Update Facility</strong>.
+                            </template>
+                            <template if:false={isEditMode}>
+                                Fill in the facility details below and click <strong>Create Facility</strong>.
+                            </template>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Record Edit Form -->
+            <lightning-record-edit-form
+                object-api-name={accountObject}
+                record-id={accountId}
+                onsubmit={handleSubmit}
+                onsuccess={handleSuccess}
+                onerror={handleError}
+                onload={handleLoad}>
+                
+                <div class="slds-grid slds-wrap slds-gutters">
+                    
+                    <!-- Section: Basic Information -->
+                    <div class="slds-col slds-size_1-of-1">
+                        <div class="slds-box slds-box_x-small slds-m-bottom_medium">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                <lightning-icon icon-name="utility:company" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                                Basic Information
+                            </h3>
+                            
+                            <div class="slds-grid slds-wrap slds-gutters_small">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="Name"
+                                        required
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="Type"
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="Industry"
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="Rating"
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="AccountSource"
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="SLA__c"
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Contact Information -->
+                    <div class="slds-col slds-size_1-of-1">
+                        <div class="slds-box slds-box_x-small slds-m-bottom_medium">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                <lightning-icon icon-name="utility:phone_portrait" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                                Contact Information
+                            </h3>
+                            
+                            <div class="slds-grid slds-wrap slds-gutters_small">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="Phone"
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="Website"
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Financial Information -->
+                    <div class="slds-col slds-size_1-of-1">
+                        <div class="slds-box slds-box_x-small slds-m-bottom_medium">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                <lightning-icon icon-name="utility:currency" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                                Financial Information
+                            </h3>
+                            
+                            <div class="slds-grid slds-wrap slds-gutters_small">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="AnnualRevenue"
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="NumberOfEmployees"
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Billing Address -->
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-box slds-box_x-small slds-m-bottom_medium">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                <lightning-icon icon-name="utility:location" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                                Billing Address
+                            </h3>
+                            
+                            <lightning-input-field
+                                field-name="BillingStreet"
+                                disabled={readOnly}>
+                            </lightning-input-field>
+                            
+                            <lightning-input-field
+                                field-name="BillingCity"
+                                disabled={readOnly}>
+                            </lightning-input-field>
+                            
+                            <div class="slds-grid slds-gutters_small">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="BillingState"
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="BillingPostalCode"
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                            </div>
+                            
+                            <lightning-input-field
+                                field-name="BillingCountry"
+                                disabled={readOnly}>
+                            </lightning-input-field>
+                        </div>
+                    </div>
+
+                    <!-- Section: Shipping Address -->
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-box slds-box_x-small slds-m-bottom_medium">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                <lightning-icon icon-name="utility:bundle_config" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                                Shipping Address
+                            </h3>
+                            
+                            <lightning-input-field
+                                field-name="ShippingStreet"
+                                disabled={readOnly}>
+                            </lightning-input-field>
+                            
+                            <lightning-input-field
+                                field-name="ShippingCity"
+                                disabled={readOnly}>
+                            </lightning-input-field>
+                            
+                            <div class="slds-grid slds-gutters_small">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="ShippingState"
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field
+                                        field-name="ShippingPostalCode"
+                                        disabled={readOnly}>
+                                    </lightning-input-field>
+                                </div>
+                            </div>
+                            
+                            <lightning-input-field
+                                field-name="ShippingCountry"
+                                disabled={readOnly}>
+                            </lightning-input-field>
+                        </div>
+                    </div>
+
+                    <!-- Section: Additional Information -->
+                    <div class="slds-col slds-size_1-of-1">
+                        <div class="slds-box slds-box_x-small slds-m-bottom_medium">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                <lightning-icon icon-name="utility:description" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                                Additional Information
+                            </h3>
+                            
+                            <lightning-input-field
+                                field-name="Description"
+                                disabled={readOnly}>
+                            </lightning-input-field>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <template if:false={readOnly}>
+                    <div class="slds-m-top_medium slds-text-align_center">
+                        <lightning-button 
+                            variant="neutral" 
+                            label="Reset" 
+                            onclick={handleReset}
+                            class="slds-m-right_small">
+                        </lightning-button>
+                        
+                        <lightning-button 
+                            variant="brand" 
+                            type="submit" 
+                            label={submitButtonLabel}
+                            disabled={isLoading}>
+                        </lightning-button>
+                    </div>
+                </template>
+            </lightning-record-edit-form>
+
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <lightning-spinner 
+                    alternative-text="Loading" 
+                    size="medium">
+                </lightning-spinner>
+            </template>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,113 @@
+<template>
+    <lightning-card title="Filter Accounts by Industry" icon-name="utility:filterList">
+        <div class="slds-p-around_medium">
+            
+            <!-- Info Message -->
+            <div class="slds-box slds-box_x-small slds-theme_info slds-m-bottom_medium">
+                <div class="slds-media slds-media_center">
+                    <div class="slds-media__figure">
+                        <lightning-icon 
+                            icon-name="utility:info" 
+                            size="small" 
+                            variant="inverse">
+                        </lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <p class="slds-text-body_small">
+                            Select one or more industries to filter accounts. 
+                            <template if:true={isIndustrySelected}>
+                                <strong>{selectedIndustryCount} industries selected</strong>
+                            </template>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dual Listbox for Industry Selection -->
+            <div class="slds-m-bottom_medium">
+                <lightning-dual-listbox
+                    name="industries"
+                    label="Select Industries"
+                    source-label="Available Industries"
+                    selected-label="Selected Industries"
+                    field-level-help="Choose the industries you want to filter accounts by"
+                    options={industryOptions}
+                    value={selectedIndustries}
+                    onchange={handleIndustryChange}
+                    disabled={readOnly}
+                    min="0"
+                    max="32"
+                    required>
+                </lightning-dual-listbox>
+            </div>
+
+            <!-- Additional Filters Section -->
+            <div class="slds-box slds-box_x-small slds-theme_shade slds-m-top_medium">
+                <h3 class="slds-text-heading_small slds-m-bottom_small">
+                    <lightning-icon 
+                        icon-name="utility:settings" 
+                        size="x-small" 
+                        class="slds-m-right_xx-small">
+                    </lightning-icon>
+                    Additional Filters
+                </h3>
+                
+                <div class="slds-grid slds-wrap slds-gutters_small">
+                    <!-- Account Type Filter -->
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-combobox
+                            name="accountType"
+                            label="Account Type"
+                            value={accountType}
+                            placeholder="Select Account Type"
+                            options={accountTypeOptions}
+                            onchange={handleAccountTypeChange}
+                            disabled={readOnly}>
+                        </lightning-combobox>
+                    </div>
+
+                    <!-- Max Records Filter -->
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="number"
+                            name="maxRecords"
+                            label="Maximum Results"
+                            value={maxRecords}
+                            min="1"
+                            max="200"
+                            step="1"
+                            onchange={handleMaxRecordsChange}
+                            disabled={readOnly}
+                            field-level-help="Limit the number of accounts returned (1-200)">
+                        </lightning-input>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Summary -->
+            <template if:true={isIndustrySelected}>
+                <div class="slds-box slds-box_x-small slds-theme_success slds-m-top_medium">
+                    <div class="slds-media slds-media_center">
+                        <div class="slds-media__figure">
+                            <lightning-icon 
+                                icon-name="utility:success" 
+                                size="small" 
+                                variant="inverse">
+                            </lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <p class="slds-text-body_small">
+                                <strong>Active Filters:</strong> 
+                                {selectedIndustryCount} industries selected
+                                <template if:true={accountType}>
+                                    , Account Type: {accountType}
+                                </template>
+                                , Max Results: {maxRecords}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

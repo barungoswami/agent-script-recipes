@@ -1,0 +1,27 @@
+/* Account Industry Editor Styling */
+
+.slds-theme_info {
+    background-color: #e8f4f8;
+    border-left: 3px solid #0176d3;
+}
+
+.slds-theme_success {
+    background-color: #e7f6e9;
+    border-left: 3px solid #2e844a;
+}
+
+.slds-theme_shade {
+    background-color: #f3f2f2;
+}
+
+/* Dual Listbox Customization */
+lightning-dual-listbox {
+    --slds-c-listbox-sizing-min-height: 200px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .slds-grid .slds-col.slds-size_1-of-2 {
+        width: 100%;
+    }
+}

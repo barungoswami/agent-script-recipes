@@ -1,0 +1,5 @@
+{
+  "title" : "Account Industry Filter",
+  "description" : "Custom Lightning Type for filtering accounts by industry",
+  "lightning:type" : "@apexClassType/c__AccountFilterRequest"
+}

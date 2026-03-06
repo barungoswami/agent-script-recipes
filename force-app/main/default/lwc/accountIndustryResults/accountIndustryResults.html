@@ -1,0 +1,113 @@
+<template>
+    <lightning-card 
+        title="Filtered Accounts" 
+        icon-name="standard:account"
+        class="results-card">
+        
+        <!-- Header with record count -->
+        <div slot="title">
+            <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon 
+                        icon-name="standard:account" 
+                        size="small">
+                    </lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span>Filtered Accounts</span>
+                        <lightning-badge 
+                            label={totalRecords} 
+                            class="slds-m-left_small">
+                        </lightning-badge>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-p-horizontal_medium">
+            <!-- Applied Filters -->
+            <template if:true={hasFilters}>
+                <div class="slds-box slds-box_x-small slds-theme_shade slds-m-top_small slds-m-bottom_small">
+                    <div class="slds-media slds-media_center">
+                        <div class="slds-media__figure">
+                            <lightning-icon 
+                                icon-name="utility:filterList" 
+                                size="small">
+                            </lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_xx-small">
+                                Applied Industry Filters:
+                            </p>
+                            <div class="filter-pills">
+                                <template for:each={filterChips} for:item="chip">
+                                    <lightning-pill 
+                                        key={chip.name} 
+                                        label={chip.label}
+                                        class="slds-m-right_xx-small slds-m-bottom_xx-small">
+                                    </lightning-pill>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Message banner -->
+            <div class="slds-scoped-notification slds-media slds-media_center slds-m-top_small" role="status">
+                <div class="slds-media__figure">
+                    <lightning-icon 
+                        icon-name="utility:info" 
+                        size="small" 
+                        variant="inverse">
+                    </lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <p>{displayMessage}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="slds-p-around_medium">
+            <template if:true={hasAccounts}>
+                <div class="table-container">
+                    <lightning-datatable
+                        key-field="accountId"
+                        data={accounts}
+                        columns={columns}
+                        hide-checkbox-column
+                        show-row-number-column
+                        default-sort-direction="asc"
+                        sorted-direction="asc"
+                        sorted-by="accountName"
+                        class="custom-results-table">
+                    </lightning-datatable>
+                </div>
+            </template>
+
+            <!-- Empty state -->
+            <template if:false={hasAccounts}>
+                <div class="slds-align_absolute-center slds-p-around_xx-large">
+                    <div class="slds-illustration slds-illustration_small">
+                        <svg class="slds-illustration__svg" viewBox="0 0 468 194" aria-hidden="true">
+                            <g>
+                                <g class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
+                                    <path d="M234,185.5H12.5c-3.3,0-6-2.7-6-6v-148c0-3.3,2.7-6,6-6h221.5c3.3,0,6,2.7,6,6v148 C240,182.8,237.3,185.5,234,185.5z"/>
+                                    <path d="M456,185.5H234.5c-3.3,0-6-2.7-6-6v-148c0-3.3,2.7-6,6-6H456c3.3,0,6,2.7,6,6v148C462,182.8,459.3,185.5,456,185.5z"/>
+                                </g>
+                            </g>
+                        </svg>
+                        <div class="slds-text-longform">
+                            <h3 class="slds-text-heading_medium">No Accounts Found</h3>
+                            <p class="slds-text-body_regular">
+                                No accounts match your selected industry filters. Try selecting different industries.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

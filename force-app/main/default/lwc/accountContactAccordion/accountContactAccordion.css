@@ -1,0 +1,215 @@
+/* Account Contact Accordion Styling */
+
+.account-contact-card {
+    margin: 0;
+    max-height: 800px;
+}
+
+.account-accordion {
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Custom Scrollbar for Accordion */
+.account-accordion::-webkit-scrollbar {
+    width: 8px;
+}
+
+.account-accordion::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.account-accordion::-webkit-scrollbar-thumb {
+    background: #0176d3;
+    border-radius: 4px;
+}
+
+.account-accordion::-webkit-scrollbar-thumb:hover {
+    background: #014486;
+}
+
+/* Accordion Header Styling */
+.accordion-header {
+    width: 100%;
+    display: block;
+}
+
+.account-section {
+    border-bottom: 1px solid #dddbda;
+}
+
+.account-section:last-child {
+    border-bottom: none;
+}
+
+/* Badge Styling */
+.contact-count-badge {
+    background-color: #0176d3;
+    color: white;
+    margin-right: 0.5rem;
+}
+
+.slds-theme_error {
+    background-color: #ea001e;
+    color: white;
+}
+
+.slds-theme_warning {
+    background-color: #fe9339;
+    color: white;
+}
+
+/* Account Details Styling */
+.account-details {
+    background-color: #fafaf9;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Custom Scrollbar for Account Details */
+.account-details::-webkit-scrollbar {
+    width: 6px;
+}
+
+.account-details::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.account-details::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.account-details::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.detail-section {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #dddbda;
+}
+
+/* Description List Styling */
+dl.slds-list_horizontal dt {
+    width: 40%;
+    font-weight: 400;
+}
+
+dl.slds-list_horizontal dd {
+    width: 60%;
+    font-weight: 600;
+}
+
+/* Contact Card Styling */
+.contacts-list {
+    max-height: 350px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 0.5rem;
+}
+
+/* Custom Scrollbar for Contacts List */
+.contacts-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.contacts-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.contacts-list::-webkit-scrollbar-thumb {
+    background: #0176d3;
+    border-radius: 3px;
+}
+
+.contacts-list::-webkit-scrollbar-thumb:hover {
+    background: #014486;
+}
+
+.contact-card {
+    background-color: #f3f2f2;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.contact-card:hover {
+    background-color: #e5e5e4;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.contact-card lightning-icon {
+    color: #0176d3;
+}
+
+.contact-card a {
+    color: #0176d3;
+    text-decoration: none;
+}
+
+.contact-card a:hover {
+    text-decoration: underline;
+}
+
+/* Notification styling */
+.slds-scoped-notification {
+    background-color: #f3f2f2;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+}
+
+/* Empty state styling */
+.slds-illustration {
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .account-accordion {
+        max-height: 500px;
+    }
+    
+    .account-details {
+        max-height: 400px;
+    }
+    
+    .contacts-list {
+        max-height: 250px;
+    }
+    
+    .slds-grid.slds-wrap .slds-col.slds-size_1-of-2 {
+        width: 100%;
+    }
+    
+    dl.slds-list_horizontal dt {
+        width: 35%;
+    }
+    
+    dl.slds-list_horizontal dd {
+        width: 65%;
+    }
+    
+    .accordion-header .slds-col.slds-size_1-of-4 {
+        width: 100%;
+        text-align: left;
+        margin-top: 0.5rem;
+    }
+}
+
+/* Smooth Scrolling */
+.account-accordion,
+.account-details,
+.contacts-list {
+    scroll-behavior: smooth;
+}
+
+/* Remove old scrollbar styling - replaced above */

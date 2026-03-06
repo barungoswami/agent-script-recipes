@@ -1,0 +1,5 @@
+{
+  "title" : "Account Contact Accordion",
+  "description" : "Custom Lightning Type for displaying accounts with related contacts in an accordion",
+  "lightning:type" : "@apexClassType/c__AccountContactList"
+}

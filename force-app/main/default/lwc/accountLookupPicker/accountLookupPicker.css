@@ -1,0 +1,26 @@
+/**
+ * Styles for Account Lookup Picker Component
+ */
+
+/* Info box styling */
+.slds-theme_info {
+    background-color: #d8edff;
+    border-left: 3px solid #0176d3;
+}
+
+.slds-theme_success {
+    background-color: #d7f3e3;
+    border-left: 3px solid #2e844a;
+}
+
+/* Section boxes */
+.slds-box {
+    background-color: #f3f3f3;
+    border-radius: 4px;
+}
+
+/* Record picker styling */
+lightning-record-picker {
+    display: block;
+    margin-bottom: 0.5rem;
+}

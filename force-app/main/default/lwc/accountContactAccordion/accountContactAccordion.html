@@ -1,0 +1,225 @@
+<template>
+    <lightning-card 
+        title="Accounts & Contacts" 
+        icon-name="standard:account"
+        class="account-contact-card">
+        
+        <!-- Header with counts -->
+        <div slot="title">
+            <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon 
+                        icon-name="standard:account" 
+                        size="small">
+                    </lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span>Accounts & Contacts</span>
+                        <lightning-badge 
+                            label={totalAccounts} 
+                            class="slds-m-left_small">
+                        </lightning-badge>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message banner -->
+        <div class="slds-p-horizontal_medium slds-p-top_small">
+            <div class="slds-scoped-notification slds-media slds-media_center" role="status">
+                <div class="slds-media__figure">
+                    <lightning-icon 
+                        icon-name="utility:info" 
+                        size="small" 
+                        variant="inverse">
+                    </lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <p>{displayMessage}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accordion -->
+        <div class="slds-p-around_medium">
+            <template if:true={hasAccounts}>
+                <lightning-accordion 
+                    active-section-name={activeSections}
+                    allow-multiple-sections-open
+                    onsectiontoggle={handleSectionToggle}
+                    class="account-accordion">
+                    
+                    <template for:each={formattedAccountsData} for:item="account">
+                        <lightning-accordion-section 
+                            key={account.id} 
+                            name={account.id} 
+                            label={account.accountName}
+                            class="account-section">
+                            
+                            <!-- Section Label with Account Info -->
+                            <span slot="label" class="accordion-header">
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                    <div class="slds-col slds-size_3-of-4">
+                                        <div class="slds-media slds-media_center">
+                                            <div class="slds-media__figure">
+                                                <lightning-icon 
+                                                    icon-name="standard:account" 
+                                                    size="small">
+                                                </lightning-icon>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <h3 class="slds-text-heading_small">{account.accountName}</h3>
+                                                <p class="slds-text-body_small slds-text-color_weak">
+                                                    {account.accountType} • {account.industry}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-4 slds-text-align_right">
+                                        <lightning-badge 
+                                            label={account.contactsLabel}
+                                            class="contact-count-badge">
+                                        </lightning-badge>
+                                        <template if:true={account.rating}>
+                                            <lightning-badge 
+                                                label={account.rating}
+                                                class={account.ratingClass}>
+                                            </lightning-badge>
+                                        </template>
+                                    </div>
+                                </div>
+                            </span>
+                            
+                            <!-- Account Details -->
+                            <div class="account-details slds-p-around_small">
+                                <div class="slds-grid slds-wrap slds-gutters_small">
+                                    <!-- Account Info Column -->
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <div class="detail-section">
+                                            <h4 class="slds-text-heading_small slds-m-bottom_x-small">Account Information</h4>
+                                            
+                                            <dl class="slds-list_horizontal slds-wrap">
+                                                <dt class="slds-item_label slds-text-color_weak">Phone:</dt>
+                                                <dd class="slds-item_detail">
+                                                    <template if:true={account.phone}>
+                                                        <a href={account.phone}>{account.phone}</a>
+                                                    </template>
+                                                    <template if:false={account.phone}>-</template>
+                                                </dd>
+                                                
+                                                <dt class="slds-item_label slds-text-color_weak">Website:</dt>
+                                                <dd class="slds-item_detail">
+                                                    <template if:true={account.website}>
+                                                        <a href={account.website} target="_blank">{account.website}</a>
+                                                    </template>
+                                                    <template if:false={account.website}>-</template>
+                                                </dd>
+                                                
+                                                <dt class="slds-item_label slds-text-color_weak">Location:</dt>
+                                                <dd class="slds-item_detail">{account.location}</dd>
+                                                
+                                                <dt class="slds-item_label slds-text-color_weak">Annual Revenue:</dt>
+                                                <dd class="slds-item_detail slds-text-title_bold">{account.formattedRevenue}</dd>
+                                                
+                                                <dt class="slds-item_label slds-text-color_weak">Employees:</dt>
+                                                <dd class="slds-item_detail">{account.numberOfEmployees}</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Contacts Column -->
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <div class="detail-section">
+                                            <h4 class="slds-text-heading_small slds-m-bottom_x-small">
+                                                Related Contacts ({account.contactCount})
+                                            </h4>
+                                            
+                                            <template if:true={account.hasContacts}>
+                                                <div class="contacts-list">
+                                                    <template for:each={account.contacts} for:item="contact">
+                                                        <div key={contact.contactId} class="contact-card slds-box slds-m-bottom_x-small">
+                                                            <div class="slds-media">
+                                                                <div class="slds-media__figure">
+                                                                    <lightning-icon 
+                                                                        icon-name="standard:contact" 
+                                                                        size="small">
+                                                                    </lightning-icon>
+                                                                </div>
+                                                                <div class="slds-media__body">
+                                                                    <h5 class="slds-text-body_regular slds-text-title_bold">
+                                                                        <template if:true={contact.contactUrl}>
+                                                                            <a href={contact.contactUrl}>{contact.displayName}</a>
+                                                                        </template>
+                                                                        <template if:false={contact.contactUrl}>
+                                                                            {contact.displayName}
+                                                                        </template>
+                                                                    </h5>
+                                                                    <p class="slds-text-body_small slds-text-color_weak">
+                                                                        {contact.displayTitle} • {contact.displayDepartment}
+                                                                    </p>
+                                                                    
+                                                                    <div class="slds-m-top_xx-small">
+                                                                        <template if:true={contact.email}>
+                                                                            <p class="slds-text-body_small">
+                                                                                <lightning-icon icon-name="utility:email" size="xx-small"></lightning-icon>
+                                                                                <a href={contact.email} class="slds-m-left_xx-small">{contact.displayEmail}</a>
+                                                                            </p>
+                                                                        </template>
+                                                                        
+                                                                        <template if:true={contact.phone}>
+                                                                            <p class="slds-text-body_small">
+                                                                                <lightning-icon icon-name="utility:phone_portrait" size="xx-small"></lightning-icon>
+                                                                                <span class="slds-m-left_xx-small">{contact.displayPhone}</span>
+                                                                            </p>
+                                                                        </template>
+                                                                        
+                                                                        <template if:true={contact.mobilePhone}>
+                                                                            <p class="slds-text-body_small">
+                                                                                <lightning-icon icon-name="utility:mobile_phone" size="xx-small"></lightning-icon>
+                                                                                <span class="slds-m-left_xx-small">{contact.displayMobile}</span>
+                                                                            </p>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                            
+                                            <template if:false={account.hasContacts}>
+                                                <div class="slds-text-align_center slds-p-vertical_medium">
+                                                    <lightning-icon 
+                                                        icon-name="utility:warning" 
+                                                        size="small" 
+                                                        variant="warning">
+                                                    </lightning-icon>
+                                                    <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">
+                                                        No contacts found for this account
+                                                    </p>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </lightning-accordion-section>
+                    </template>
+                </lightning-accordion>
+            </template>
+
+            <!-- Empty state -->
+            <template if:false={hasAccounts}>
+                <div class="slds-align_absolute-center slds-p-around_xx-large">
+                    <div class="slds-illustration slds-illustration_small">
+                        <div class="slds-text-longform">
+                            <h3 class="slds-text-heading_medium">No Accounts Found</h3>
+                            <p class="slds-text-body_regular">There are no accounts with contacts to display at this time.</p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

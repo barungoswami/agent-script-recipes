@@ -1,0 +1,5 @@
+{
+  "title" : "Account Lookup",
+  "description" : "Account lookup using lightning-record-picker with detailed card display",
+  "lightning:type" : "@apexClassType/c__AccountLookupRequest"
+}

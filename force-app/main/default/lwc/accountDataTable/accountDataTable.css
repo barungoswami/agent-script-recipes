@@ -1,0 +1,56 @@
+/* Account Data Table Styling */
+
+.account-table-card {
+    margin: 0;
+}
+
+.custom-account-table {
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+}
+
+/* Rating color indicators */
+.slds-text-color_error {
+    color: #ea001e;
+}
+
+.slds-text-color_warning {
+    color: #fe9339;
+}
+
+.slds-text-color_weak {
+    color: #706e6b;
+}
+
+.slds-text-title_bold {
+    font-weight: 700;
+}
+
+/* Notification styling */
+.slds-scoped-notification {
+    background-color: #f3f2f2;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+}
+
+/* Empty state styling */
+.slds-illustration {
+    text-align: center;
+}
+
+.slds-illustration img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Badge styling */
+lightning-badge {
+    vertical-align: middle;
+}
+
+/* Responsive table container */
+@media (max-width: 768px) {
+    .custom-account-table {
+        font-size: 0.875rem;
+    }
+}

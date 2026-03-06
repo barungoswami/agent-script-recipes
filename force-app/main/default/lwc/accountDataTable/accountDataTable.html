@@ -1,0 +1,73 @@
+<template>
+    <lightning-card 
+        title="Accounts" 
+        icon-name="standard:account"
+        class="account-table-card">
+        
+        <!-- Header with record count -->
+        <div slot="title">
+            <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon 
+                        icon-name="standard:account" 
+                        size="small">
+                    </lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span>Accounts</span>
+                        <lightning-badge 
+                            label={totalRecords} 
+                            class="slds-m-left_small">
+                        </lightning-badge>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message banner -->
+        <div class="slds-p-horizontal_medium slds-p-top_small">
+            <div class="slds-scoped-notification slds-media slds-media_center" role="status">
+                <div class="slds-media__figure">
+                    <lightning-icon 
+                        icon-name="utility:info" 
+                        size="small" 
+                        variant="inverse">
+                    </lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <p>{displayMessage}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="slds-p-around_medium">
+            <template if:true={hasAccounts}>
+                <lightning-datatable
+                    key-field="accountId"
+                    data={accounts}
+                    columns={columns}
+                    hide-checkbox-column
+                    show-row-number-column
+                    default-sort-direction="asc"
+                    sorted-direction="asc"
+                    sorted-by="accountName"
+                    class="custom-account-table">
+                </lightning-datatable>
+            </template>
+
+            <!-- Empty state -->
+            <template if:false={hasAccounts}>
+                <div class="slds-align_absolute-center slds-p-around_xx-large">
+                    <div class="slds-illustration slds-illustration_small">
+                        <div class="slds-text-longform">
+                            <h3 class="slds-text-heading_medium">No Accounts Found</h3>
+                            <p class="slds-text-body_regular">There are no accounts to display at this time.</p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

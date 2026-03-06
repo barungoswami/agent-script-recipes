@@ -1,0 +1,5 @@
+{
+  "title" : "Account Record Form",
+  "description" : "Custom Lightning Type for creating/editing Account records",
+  "lightning:type" : "@apexClassType/c__AccountFormRequest"
+}

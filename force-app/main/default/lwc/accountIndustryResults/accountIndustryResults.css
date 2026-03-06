@@ -1,0 +1,117 @@
+/* Account Industry Results Styling */
+
+.results-card {
+    margin: 0;
+}
+
+/* Table Container with Scroll */
+.table-container {
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+}
+
+.custom-results-table {
+    min-width: 100%;
+}
+
+/* Custom Scrollbar */
+.table-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #0176d3;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #014486;
+}
+
+/* Industry Badge Styling */
+.industry-badge {
+    font-weight: 600;
+    color: #3e3e3c;
+}
+
+.industry-selected {
+    color: #0176d3;
+    background-color: #e8f4f8;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-weight: 700;
+}
+
+/* Rating Badges */
+.slds-theme_error {
+    background-color: #ea001e;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.slds-theme_warning {
+    background-color: #fe9339;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+/* Filter Pills Container */
+.filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+/* Notification styling */
+.slds-scoped-notification {
+    background-color: #f3f2f2;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+}
+
+.slds-theme_shade {
+    background-color: #f3f2f2;
+}
+
+/* Empty state styling */
+.slds-illustration {
+    text-align: center;
+}
+
+.slds-illustration__svg {
+    max-width: 300px;
+    height: auto;
+    margin: 0 auto;
+}
+
+/* Badge styling */
+lightning-badge {
+    vertical-align: middle;
+}
+
+/* Responsive table container */
+@media (max-width: 768px) {
+    .table-container {
+        max-height: 400px;
+    }
+    
+    .custom-results-table {
+        font-size: 0.875rem;
+    }
+}
+
+/* Smooth Scrolling */
+.table-container {
+    scroll-behavior: smooth;
+}
