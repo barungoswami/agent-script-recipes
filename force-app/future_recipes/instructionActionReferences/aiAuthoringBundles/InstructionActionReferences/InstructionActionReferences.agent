@@ -1,0 +1,52 @@
+# InstructionActionReferences
+# Demonstrates how to reference actions directly within reasoning instructions
+
+config:
+   agent_name: "InstructionActionReferences_Agent"
+   agent_label: "Action Reference Demo"
+   description: "Demonstrates embedding action references in instructions"
+
+variables:
+   next_open_time: mutable string = "9:00 AM Tomorrow"
+
+system:
+   messages:
+      welcome: "Hi! I can help you create support cases."
+      error: "Something went wrong."
+
+   instructions: "You are a support assistant."
+
+start_agent topic_selector:
+   description: "Start topic"
+   
+   reasoning:
+      actions:
+         start: @utils.transition to @topic.case_management
+
+topic case_management:
+   description: "Manages support cases"
+   
+   actions:
+      create_case:
+         description: "Creates a support case"
+         inputs:
+            subject: string
+            description: "Subject of the case"
+         outputs:
+            case_number: string
+            description: "The created case number"
+         target: "flow://CreateCase"
+
+   reasoning:
+      instructions:->
+         | If the user has an issue that requires support, please help them.
+         
+           If not within business hours, create a support case by using {!@actions.create_case}. # Referencing the action directly guides the model to use it
+           Share the Case Number and when to expect follow-up ({!@variables.next_open_time}).    # and also provides context variables in the same prompt
+
+      actions:
+         create_case: @actions.create_case
+            with subject=...
+            # We don't need to manually set variables if the model reads the output directly
+            # but usually good practice to do so.
+
