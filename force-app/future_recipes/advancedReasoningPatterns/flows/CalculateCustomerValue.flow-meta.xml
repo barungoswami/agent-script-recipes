@@ -7,9 +7,7 @@
     <label>Calculate Customer Value</label>
     <processMetadataValues>
         <name>BuilderType</name>
-        <value>
-            <stringValue>LightningFlowBuilder</stringValue>
-        </value>
+        <value>LightningFlowBuilder</value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <start>
